@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakura Verse - Poetry in Bloom</title>
+    <style>
+        :root {
+            --sakura-pink: #f8d7e6;
+            --blossom-pink: #ffb3c8;
+            --petal-white: #fff5f9;
+            --branch-brown: #6b4f40;
+            --leaf-green: #8ca87c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--petal-white) 0%, var(--sakura-pink) 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Sakura Petal Animation */
+        .petals {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .petal {
+            position: absolute;
+            background: url('data:image/svg+xml,<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="%23ffb3c8" d="M10 0c1.7 0 3 3.1 3 7s-1.3 7-3 7-3-3.1-3-7S8.3 0 10 0zm0 15c5.5 0 10-3.6 10-8S15.5-1 10-1 0 2.6 0 7s4.5 8 10 8z"/></svg>');
+            background-size: cover;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* Blossom Menu Button */
+        .menu-btn {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            width: 70px;
+            height: 70px;
+            background: var(--blossom-pink);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(255, 179, 200, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: #ff9eb8;
+            box-shadow: 0 6px 25px rgba(255, 158, 184, 0.4);
+        }
+
+        .menu-btn::before {
+            content: '🌸';
+            font-size: 2.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        /* Blossom Menu */
+        .menu-content {
+            position: fixed;
+            top: 10rem;
+            right: -300px;
+            background: rgba(255, 255, 255, 0.95);
+            width: 280px;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            backdrop-filter: blur(5px);
+        }
+
+        .menu-content.active {
+            right: 2rem;
+        }
+
+        .menu-content a {
+            display: block;
+            color: var(--branch-brown);
+            text-decoration: none;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .menu-content a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: var(--blossom-pink);
+            transition: width 0.3s ease;
+        }
+
+        .menu-content a:hover {
+            background: rgba(255, 179, 200, 0.1);
+            padding-left: 1.5rem;
+        }
+
+        .menu-content a:hover::before {
+            width: 100%;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 8rem 0 4rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: var(--branch-brown);
+            text-shadow: 2px 2px 4px rgba(107, 79, 64, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: var(--leaf-green);
+            letter-spacing: 1px;
+        }
+
+        /* Poem Cards */
+        .poem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .poem-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .poem-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .poem-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, var(--blossom-pink) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .poem-card:hover::after {
+            opacity: 0.1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sakura Petals -->
+    <div class="petals" id="petals"></div>
+
+    <div class="container">
+        <!-- Blossom Menu -->
+        <div class="menu-btn" onclick="toggleMenu()"></div>
+        <nav class="menu-content" id="menuContent">
+            <a href="/haiku">Haiku Garden</a>
+            <a href="/sonnets">Blossom Sonnets</a>
+            <a href="/modern">Spring Verse</a>
+            <a href="/forms">Floral Forms</a>
+            <a href="/history">Sakura History</a>
+            <a href="/poets">Seasonal Poets</a>
+            <a href="/symbolism">Flower Meanings</a>
+        </nav>
+
+        <header>
+            <h1>Sakura Verse</h1>
+            <p class="tagline">Where Poetry Blooms Like Cherry Flowers</p>
+        </header>
+
+        <main>
+            <div class="poem-grid">
+                <div class="poem-card">
+                    <h2>Spring Awakening</h2>
+                    <p>"A World of Blossoms" by Matsuo Bashō</p>
+                </div>
+                <div class="poem-card">
+                    <h2>Floral Form</h2>
+                    <p>The Art of Tanka Poetry</p>
+                </div>
+                <div class="poem-card">
+                    <h2>Poet's Grove</h2>
+                    <p>Yosa Buson: Master of Nature</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('menuContent');
+            menu.classList.toggle('active');
+        }
+
+        // Create falling sakura petals
+        function createPetals() {
+            const petalsContainer = document.getElementById('petals');
+            for (let i = 0; i < 15; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.width = petal.style.height = (Math.random() * 15 + 10) + 'px';
+                petal.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                petal.style.animationDelay = Math.random() * 5 + 's';
+                petalsContainer.appendChild(petal);
+            }
+        }
+        createPetals();
+    </script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+</body>
+</html>
