@@ -25,6 +25,7 @@
             min-height: 100vh;
             position: relative;
             overflow-x: hidden;
+            color: var(--branch-brown);
         }
 
         /* Sakura Petal Animation */
@@ -33,28 +34,36 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 0;
+            z-index: 1; /* Below content */
         }
 
         .petal {
             position: absolute;
-            background: url('data:image/svg+xml,<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill="%23ffb3c8" d="M10 0c1.7 0 3 3.1 3 7s-1.3 7-3 7-3-3.1-3-7S8.3 0 10 0zm0 15c5.5 0 10-3.6 10-8S15.5-1 10-1 0 2.6 0 7s4.5 8 10 8z"/></svg>');
-            background-size: cover;
+            font-size: 1.5rem;
+            color: #ffb3c8;
+            opacity: 0.8;
             animation: fall linear infinite;
+            text-shadow: 0 0 8px rgba(255, 179, 200, 0.3);
         }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); }
-            100% { transform: translateY(110vh) rotate(360deg); }
+            0% { 
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% { 
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         /* Blossom Menu Button */
         .menu-btn {
             position: fixed;
-            top: 2rem;
-            right: 2rem;
-            width: 70px;
-            height: 70px;
+            top: 1rem;
+            right: 1rem;
+            width: 50px;
+            height: 50px;
             background: var(--blossom-pink);
             border-radius: 50%;
             cursor: pointer;
@@ -67,34 +76,35 @@
         }
 
         .menu-btn:hover {
-            transform: scale(1.1) rotate(90deg);
+            transform: scale(1.1);
             background: #ff9eb8;
             box-shadow: 0 6px 25px rgba(255, 158, 184, 0.4);
         }
 
         .menu-btn::before {
             content: '🌸';
-            font-size: 2.5rem;
-            transition: transform 0.3s ease;
+            font-size: 1.5rem;
         }
 
-        /* Blossom Menu */
+        /* Menu Content */
         .menu-content {
             position: fixed;
-            top: 10rem;
-            right: -300px;
+            top: 0;
+            right: -100%;
             background: rgba(255, 255, 255, 0.95);
-            width: 280px;
-            padding: 1.5rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 280px;
+            height: 100vh;
+            padding: 4rem 1.5rem 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 999;
             backdrop-filter: blur(5px);
+            overflow-y: auto;
         }
 
         .menu-content.active {
-            right: 2rem;
+            right: 0;
         }
 
         .menu-content a {
@@ -119,48 +129,66 @@
             transition: width 0.3s ease;
         }
 
-        .menu-content a:hover {
+        .menu-content a:hover, .menu-content a:active {
             background: rgba(255, 179, 200, 0.1);
             padding-left: 1.5rem;
         }
 
-        .menu-content a:hover::before {
+        .menu-content a:hover::before, .menu-content a:active::before {
             width: 100%;
+        }
+
+        /* Close button for mobile menu */
+        .close-menu {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--branch-brown);
+            display: none;
         }
 
         /* Header Styles */
         header {
             text-align: center;
-            padding: 8rem 0 4rem;
+            padding: 6rem 1rem 3rem;
+            position: relative;
+            z-index: 2; /* Above petals */
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 4rem;
+            font-size: 3rem;
             color: var(--branch-brown);
             text-shadow: 2px 2px 4px rgba(107, 79, 64, 0.1);
             margin-bottom: 1rem;
         }
 
         .tagline {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--leaf-green);
             letter-spacing: 1px;
+            padding: 0 1rem;
         }
 
         /* Poem Cards */
         .poem-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            padding: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1.5rem;
             max-width: 1200px;
             margin: 0 auto;
+            position: relative;
+            z-index: 2; /* Above petals */
         }
 
         .poem-card {
             background: rgba(255, 255, 255, 0.9);
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease;
@@ -172,31 +200,84 @@
             transform: translateY(-5px);
         }
 
-        .poem-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, var(--blossom-pink) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        /* Responsive Design */
+        @media (min-width: 768px) {
+            .menu-btn {
+                top: 2rem;
+                right: 2rem;
+                width: 70px;
+                height: 70px;
+            }
+            
+            .menu-btn::before {
+                font-size: 2.5rem;
+            }
+
+            .menu-content {
+                top: 10rem;
+                right: -300px;
+                height: auto;
+                border-radius: 15px;
+                padding: 1.5rem;
+                max-width: 280px;
+            }
+
+            .menu-content.active {
+                right: 2rem;
+            }
+
+            .close-menu {
+                display: none;
+            }
+
+            header {
+                padding: 8rem 0 4rem;
+            }
+
+            h1 {
+                font-size: 4rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+
+            .poem-grid {
+                padding: 2rem;
+                gap: 2rem;
+            }
+
+            .poem-card {
+                padding: 2rem;
+            }
         }
 
-        .poem-card:hover::after {
-            opacity: 0.1;
+        /* Touch-friendly targets for mobile */
+        @media (max-width: 767px) {
+            .menu-content a {
+                padding: 1.2rem 1rem;
+                margin: 0.7rem 0;
+            }
+
+            .close-menu {
+                display: block;
+            }
+            
+            .poem-card {
+                margin-bottom: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Sakura Petals -->
+    <!-- Sakura Blossoms -->
     <div class="petals" id="petals"></div>
 
     <div class="container">
         <!-- Blossom Menu -->
         <div class="menu-btn" onclick="toggleMenu()"></div>
         <nav class="menu-content" id="menuContent">
+            <button class="close-menu" onclick="toggleMenu()">✕</button>
             <a href="/haiku">Haiku Garden</a>
             <a href="/sonnets">Blossom Sonnets</a>
             <a href="/modern">Spring Verse</a>
@@ -235,20 +316,51 @@
             menu.classList.toggle('active');
         }
 
-        // Create falling sakura petals
+        // Create falling sakura blossoms
         function createPetals() {
             const petalsContainer = document.getElementById('petals');
-            for (let i = 0; i < 15; i++) {
+            const blossom = '🌸';
+            
+            // Reduce number of petals on smaller screens
+            const isMobile = window.innerWidth <= 768;
+            const petalCount = isMobile ? 10 : 20;
+            
+            for (let i = 0; i < petalCount; i++) {
                 const petal = document.createElement('div');
                 petal.className = 'petal';
+                petal.innerHTML = blossom;
                 petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.width = petal.style.height = (Math.random() * 15 + 10) + 'px';
-                petal.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                petal.style.animationDuration = (Math.random() * 8 + 6) + 's';
                 petal.style.animationDelay = Math.random() * 5 + 's';
+                petal.style.fontSize = (Math.random() * (isMobile ? 15 : 20) + (isMobile ? 10 : 15)) + 'px';
                 petalsContainer.appendChild(petal);
             }
         }
+        
+        // Initialize petals
         createPetals();
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            // Clear existing petals
+            const petalsContainer = document.getElementById('petals');
+            petalsContainer.innerHTML = '';
+            
+            // Create new petals appropriate for screen size
+            createPetals();
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('menuContent');
+            const menuBtn = document.querySelector('.menu-btn');
+            
+            if (menu.classList.contains('active') && 
+                !menu.contains(event.target) && 
+                event.target !== menuBtn) {
+                menu.classList.remove('active');
+            }
+        });
     </script>
 
     <!-- Google Fonts -->
